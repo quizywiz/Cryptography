@@ -1,21 +1,24 @@
 import random
 from fractions import gcd
 import time
-def key_gen(ne, n, r1, r2):
+def key_gen(ne, n, n1, r1, r2):
     print "start keygen"
     loops = 0
-    x1 = random.randrange(ne, n)
+    x1 = random.randrange(2^(n1-3), 2^n1)
+    np1 = int((n/2)/r1)
+    print np1
     while True:
         loops += 1
-        x2 = random.randrange(ne, n)
+        x2 = random.randrange((2^(np1 - n1-3)),2^(np1 - n1))
         p1 = x1*x2 + 1
         if is_prime(p1):
         	break
     x2 *= p1^(r1-1)
     print "one", loops
+    np2 = int((n/2 - ne + n1)/r2)
     while True:
         loops += 1
-        y2 = random.randrange(ne, n)
+        y2 = random.randrange((2^(np2 - n1-3)), (2^(np2 - n1)))
         p2 = x1*y2 + 1
         if is_prime(p2):
             break
@@ -24,7 +27,7 @@ def key_gen(ne, n, r1, r2):
     print "two", loops
     while True:
         loops += 1
-        y1 = random.randrange(ne, n)
+        y1 = random.randrange(2^(ne-3), 2^ne)
         q1 = y1*y2 + 1
         if is_prime(q1):
             break
@@ -32,7 +35,7 @@ def key_gen(ne, n, r1, r2):
     while True:
         while True:
    			loops += 1
-   			e = random.randrange(ne, n)
+   			e = random.randrange(2^(ne-3), 2^ne)
    			if gcd(e,x1*x2*y1*y2)==1:
    				break
         one,d,k1 = xgcd(e, -x1*x2*y1*y2)
@@ -54,9 +57,12 @@ def key_gen(ne, n, r1, r2):
 
 def test():
     print "start test"
-    N1,N2,e,d = key_gen(2**250,2**252,2,2)
+    #ne n n1 r1 r2
+    N1,N2,e,d = key_gen(50,2000,250,2,2)
     print int(N1).bit_length()
     print int(N2).bit_length()
+    print int(e).bit_length()
+    print int(d).bit_length()
     print "done"
     #print "N1, N2, e, d", N1,N2,e,d    
     m = random.randrange(2 ** 110, 2 ** 120)
@@ -71,8 +77,3 @@ def test():
 t0 = time.time()
 test()
 print "time: ", time.time() - t0
-
-
-
-
-
